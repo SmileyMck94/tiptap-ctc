@@ -1,5 +1,144 @@
 # Releases
 
+## v3.22.1
+
+### @tiptap/extension-drag-handle
+
+#### Patch Changes
+
+- Fixed drag handle ghost image for RTL and mixed-direction content: the ghost wrapper now uses the dragged block’s computed `direction` (via `domAtPos`), and the drag image hotspot uses the cursor position relative to the ghost `wrapper` so the preview aligns with the pointer in both LTR and RTL.
+
+### @tiptap/core
+
+#### Patch Changes
+
+- Fix NodeView not re-rendering when a node's position changes without content or decoration changes (e.g. when a sibling node is moved within the same parent)
+- Don't stop dragover/dragenter events in NodeViews, to prevent spurious drag-copy cursors
+
+### @tiptap/react
+
+#### Patch Changes
+
+- Fix NodeView not re-rendering when a node's position changes without content or decoration changes (e.g. when a sibling node is moved within the same parent)
+- Prevent React node views from crashing during deferred selection updates when ProseMirror has already detached the node view position lookup.
+
+### @tiptap/vue-3
+
+#### Patch Changes
+
+- Fix NodeView not re-rendering when a node's position changes without content or decoration changes (e.g. when a sibling node is moved within the same parent)
+
+### @tiptap/vue-2
+
+#### Patch Changes
+
+- Fix NodeView not re-rendering when a node's position changes without content or decoration changes (e.g. when a sibling node is moved within the same parent)
+
+## v3.22.0
+
+### @tiptap/extension-emoji
+
+#### Patch Changes
+
+- Use a named import for Suggestion from `@tiptap/suggestion` to avoid bundler ESM/CJS interop
+  wrapping (`__toESM`) that caused CJS consumers to receive a module object instead of the
+  callable plugin factory.
+  
+  This is a non-breaking internal fix identical to the one applied to `@tiptap/extension-mention`
+  in #6994.
+
+### @tiptap/extension-collaboration
+
+#### Patch Changes
+
+- Moved content validation from Yjs `beforeTransaction` (whose return value was ignored) to ProseMirror `filterTransaction`, so invalid collaborative changes are now properly blocked.
+
+### @tiptap/extension-bubble-menu
+
+#### Patch Changes
+
+- Prevent hidden bubble menus from reappearing during scroll and resize updates. Bubble menu positioning now only runs for menus that are already shown, so default text-selection menus stay hidden until they should actually open.
+
+### @tiptap/core
+
+#### Patch Changes
+
+- Fix HTML character escaping in markdown roundtrip. HTML entities (`&lt;`, `&gt;`, `&amp;`, `&quot;`) are now decoded to literal characters when parsing markdown into the editor. `<`, `>`, and `&` are re-encoded when serializing back to markdown, while `"` is preserved as a literal character since double quotes are ordinary in markdown. Code detection for skipping encoding now uses the `code: true` extension spec instead of hardcoded type names. Literal characters inside code blocks and inline code are always preserved.
+- Fix ResizableNodeView ignoring node's inline setting by using `inline-flex` for inline nodes and `flex` for block nodes
+- extendMarkRange defaults to using the attributes of the first mark of the given type, instead of `attributes = {}`. In particular, `extendMarkRange('link')` no longer extends to adjacent links with different hrefs; restore the previous behavior with `extendMarkRange('link', {})`.
+- Fix getMarkRange attributes default to consider the first mark _of the given type_
+- Guard mark delete event handling when `unsetMark` removes a mark from inline content that starts at position `0`, preventing a `RangeError` during the before-node lookup.
+
+### @tiptap/markdown
+
+#### Patch Changes
+
+- Fix HTML character escaping in markdown roundtrip. HTML entities (`&lt;`, `&gt;`, `&amp;`, `&quot;`) are now decoded to literal characters when parsing markdown into the editor. `<`, `>`, and `&` are re-encoded when serializing back to markdown, while `"` is preserved as a literal character since double quotes are ordinary in markdown. Code detection for skipping encoding now uses the `code: true` extension spec instead of hardcoded type names. Literal characters inside code blocks and inline code are always preserved.
+
+### @tiptap/extension-mathematics
+
+#### Patch Changes
+
+- Prevent inline math input rule from capturing previous character. Changed input rule to utilize negative lookbehind to prevent matching previous character. Ensures the range's `from` position is correctly at the start of the double `$` signs.
+
+### @tiptap/suggestion
+
+#### Patch Changes
+
+- Suggestions dismissed via Escape no longer reappear when the user keeps typing in the same word — they only come back after inserting whitespace, a newline, or moving the cursor to a different trigger.
+
+### @tiptap/extension-details
+
+#### Patch Changes
+
+- Fix a rerender loop in the Details node view when the toggle button updates its DOM attributes through `renderToggleButton`.
+
+### @tiptap/html
+
+#### Patch Changes
+
+- Updated happy-dom to 20.8.9
+
+### @tiptap/extension-table
+
+#### Minor Changes
+
+- Added Markdown table alignment support. The `TableCell` and `TableHeader` nodes now have an `align` attribute (`left`, `center`, `right`) that is parsed from Markdown column alignment markers (`:---`, `---:`, `:---:`) and serialized back when rendering to Markdown. Alignment is also parsed from and rendered to HTML via `style="text-align: ..."`.
+
+## v3.21.0
+
+### @tiptap/extension-details
+
+#### Minor Changes
+
+- Add a `renderToggleButton` option to customize the details toggle button, including its accessible label.
+
+### @tiptap/markdown
+
+#### Patch Changes
+
+- Fix custom markdown tokenizer helper lexing to use Marked's active lexer so ordered list parsing no longer breaks inline tokenization in following paragraphs.
+
+### @tiptap/extension-drag-handle
+
+#### Patch Changes
+
+- Updated `findElementNextToCoords` to fall back to `view.posAtCoords` when `elementsFromPoint` returns no matching block, resolving the position to the top-level block node.
+
+### @tiptap/extension-emoji
+
+#### Patch Changes
+
+- Update emoji dataset to include latest Unicode emojis.
+
+## v3.20.6
+
+### @tiptap/extension-drag-handle
+
+#### Patch Changes
+
+- Fix drag preview cleanup so cloned drag images are also removed when dragging ends without a valid drop.
+
 ## v3.20.5
 
 ### @tiptap/extensions
@@ -237,24 +376,27 @@
 #### Minor Changes
 
 - Introduce a new, optional React integration that provides a declarative `<Tiptap />` component for setting up editors in React apps.
-  
+
   Summary
+
   - Add a new, ergonomic way to initialize and use Tiptap editors in React via `<Tiptap />` components. This is an additive change and does not remove or change existing APIs.
-  
+
   Why this change
+
   - Improves ergonomics for React users by offering a component-first API that pairs well with React patterns (hooks, JSX composition and props-driven configuration).
-  
+
   Migration and usage
+
   - The old programmatic setup remains supported for this major version — nothing breaks. We encourage consumers to try the new `<Tiptap />` component and migrate when convenient.
-  
+
   Example
-  
+
   ```tsx
   import { Tiptap, useEditor } from '@tiptap/react'
-  
+
   function MyEditor() {
     const editor = useEditor({ extensions: [StarterKit], content: '<h1>Hello from Tiptap</h1>' })
-  
+
     return (
       <Tiptap instance={editor}>
         <Tiptap.Content />
@@ -265,8 +407,9 @@
     )
   }
   ```
-  
+
   Deprecation plan
+
   - The old imperative setup will remain fully backward-compatible for this major release. We plan to deprecate (and remove) the legacy setup in the next major version — a deprecation notice and migration guide will be published ahead of that change.
 
 #### Patch Changes
@@ -538,7 +681,7 @@
 #### Patch Changes
 
 - Append all children of editors parent node to element
-  
+
   Fixes a regression introduced by #6972, that resulted in elements that got appended to the editors parent node staying detached. E.g. the drag handle plugin is affected by this regression.
 
 ### @tiptap/vue-2
@@ -546,7 +689,7 @@
 #### Patch Changes
 
 - Append all children of editors parent node to element
-  
+
   Fixes a regression introduced by #6972, that resulted in elements that got appended to the editors parent node staying detached. E.g. the drag handle plugin is affected by this regression.
 
 ### @tiptap/vue-3
@@ -554,7 +697,7 @@
 #### Patch Changes
 
 - Append all children of editors parent node to element
-  
+
   Fixes a regression introduced by #6972, that resulted in elements that got appended to the editors parent node staying detached. E.g. the drag handle plugin is affected by this regression.
 
 ### @tiptap/extension-drag-handle
@@ -649,7 +792,7 @@
 #### Minor Changes
 
 - Implement position mapping using the `MappablePosition` class. This enables position mapping in collaborative editing scenarios.
-  
+
   - Introduce `MappablePosition` class in core with `position`, `fromJSON`, and `toJSON` methods
   - Add `editor.utils` property with `getUpdatedPosition(position, transaction)` and `createMappablePosition()` methods
   - Create `CollaborationMappablePosition` subclass that extends `MappablePosition` with Y.js relative position support
@@ -659,7 +802,7 @@
 #### Minor Changes
 
 - Implement position mapping using the `MappablePosition` class. This enables position mapping in collaborative editing scenarios.
-  
+
   - Introduce `MappablePosition` class in core with `position`, `fromJSON`, and `toJSON` methods
   - Add `editor.utils` property with `getUpdatedPosition(position, transaction)` and `createMappablePosition()` methods
   - Create `CollaborationMappablePosition` subclass that extends `MappablePosition` with Y.js relative position support
@@ -687,10 +830,10 @@
 #### Patch Changes
 
 - Improve TypeScript generics for Node.extend
-  
+
   The Node.extend method's TypeScript signature was updated so that ExtendedConfig can extend NodeConfig and MarkConfig,
   improving type inference when extending Node and Mark classes with additional config properties.
-  
+
   This is a type-only change — there are no runtime behavior changes.
 
 ### @tiptap/extensions

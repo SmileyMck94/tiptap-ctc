@@ -1,5 +1,44 @@
 # Change Log
 
+## 3.22.1
+
+### Patch Changes
+
+- Updated dependencies [ee03ac0]
+- Updated dependencies [b88f9ed]
+  - @tiptap/core@3.22.1
+  - @tiptap/extension-code-block@3.22.1
+  - @tiptap/pm@3.22.1
+
+## 3.22.0
+
+### Patch Changes
+
+- Updated dependencies [912a49b]
+- Updated dependencies [7d4fb9a]
+- Updated dependencies [0c1c112]
+- Updated dependencies [0c1c112]
+- Updated dependencies [f99bdc2]
+  - @tiptap/core@3.22.0
+  - @tiptap/extension-code-block@3.22.0
+  - @tiptap/pm@3.22.0
+
+## 3.21.0
+
+### Patch Changes
+
+- @tiptap/core@3.21.0
+- @tiptap/extension-code-block@3.21.0
+- @tiptap/pm@3.21.0
+
+## 3.20.6
+
+### Patch Changes
+
+- @tiptap/core@3.20.6
+- @tiptap/extension-code-block@3.20.6
+- @tiptap/pm@3.20.6
+
 ## 3.20.5
 
 ### Patch Changes
